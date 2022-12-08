@@ -8,7 +8,10 @@ enum RequestMethods {
 
 export default async function(req: Request, res: Response, next: NextFunction) {
   console.info('checking the oauth');
-  if (req.url.endsWith('user/register') && req.method == RequestMethods.POST) {
+  console.info(req.url);
+  console.info(req.originalUrl);
+  console.info(req.url.endsWith('user/register'));
+  if (req.url.includes('register') && req.method == RequestMethods.POST) {
     return next();
   }
 

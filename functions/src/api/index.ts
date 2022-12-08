@@ -6,7 +6,7 @@ import analyticsRoute from './analytics';
 import userRoute from './user';
 import universityRoute from './university';
 import * as cors from 'cors';
-import firebaseAuth from './middleware/firebaseAuth';
+// import firebaseAuth from './middleware/firebaseAuth';
 
 import * as functions from 'firebase-functions';
 
@@ -20,15 +20,15 @@ app.use((req, res, next) => {
   next();
 });
 
-const authRoutes = [
-  '/api/application',
-  '/api/experience',
-  '/api/analytics',
-  '/api/user',
-];
+// const authRoutes = [
+//   '/api/application',
+//   '/api/experience',
+//   '/api/analytics',
+//   '/api/user',
+// ];
 
 
-app.use(authRoutes, firebaseAuth);
+// app.use(authRoutes, firebaseAuth);
 
 app.use('/api', apiRoute);
 

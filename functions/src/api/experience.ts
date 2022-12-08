@@ -12,8 +12,11 @@ const appServiceHeaders = {
 
 router.use(async (req: Request, res: Response) => {
   try {
-    const [, pathUrl]= req.url.split('/api');
+    console.info(req.originalUrl);
+    console.info(req.url);
+    const [, pathUrl]= req.originalUrl.split('/api');
     const url = domain + pathUrl;
+    console.info(url);
     const receivedRes = await axios({
       url,
       method: req.method,
