@@ -12,12 +12,12 @@ const appServiceHeaders = {
 
 router.use(async (req: Request, res: Response) => {
   try {
-    const [, pathUrl]= req.url.split('/api');
+    const [, pathUrl]= req.originalUrl.split('/api');
     const url = domain + pathUrl;
     const receivedRes = await axios({
       url,
       method: req.method,
-      headers: appServiceHeaders,
+      headers: Object.assign({}, req.headers, appServiceHeaders),
       params: req.query,
       data: req.body,
     });

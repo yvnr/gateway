@@ -17,33 +17,30 @@ export default async function(req: Request, res: Response, next: NextFunction) {
 
   const authorization = req.headers['authorization'];
   if (!authorization) {
-    res.status(401).send({
+    return res.status(401).send({
       code: 'unauthorized',
       message: 'You are not authorized to make this request',
     });
-    return;
   }
 
   const [type, idToken] = authorization.split(' ');
 
   if (type !== 'idToken' || !idToken) {
-    res.status(401).send({
+    return res.status(401).send({
       code: 'unauthorized',
       message: 'You are not authorized to make this request',
     });
-    return;
   }
   try {
     const decodedToken = await auth().verifyIdToken(idToken, true);
     const userRecord = await auth().getUser(decodedToken.uid);
     req.headers['x-uid'] = userRecord.uid;
     req.headers['x-univ-id'] = userRecord.customClaims?.univId as string;
-    next();
+    return next();
   } catch (error) {
-    res.status(401).send({
+    return res.status(401).send({
       code: 'unauthorized',
       message: 'You are not authorized to make this request',
     });
-    return;
   }
 }
