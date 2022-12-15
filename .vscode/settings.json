@@ -3,4 +3,5 @@
     "./functions",
   ],
   "eslint.format.enable": true,
+  "editor.formatOnSave": true
 }

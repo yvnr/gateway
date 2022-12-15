@@ -1,23 +1,14 @@
 import {Router, Request, Response} from 'express';
 import axios from 'axios';
-import secrets from '../secrets';
 
 const router = Router();
 
-const domain = secrets.services['aggregator']['domain'];
-const appServiceHeaders = {
-  'Authorization': `${secrets.services['aggregator']['serviceId']} ${secrets.services['aggregator']['apiKey']}`,
-  'Content-Type': 'application/json',
-};
-
 router.use(async (req: Request, res: Response) => {
   try {
-    const [, pathUrl]= req.originalUrl.split('/api');
-    const url = domain + pathUrl;
     const receivedRes = await axios({
-      url,
+      url: res.locals['url'],
       method: req.method,
-      headers: Object.assign({}, req.headers, appServiceHeaders),
+      headers: req.headers,
       params: req.query,
       data: req.body,
     });
