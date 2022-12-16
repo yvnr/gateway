@@ -32,12 +32,12 @@ enum RequestMethods {
    PATCH ='PATCH'
 }
 
-enum ErrorCodes {
+export enum ErrorCodes {
   InvalidURL = 'invalid-url',
   Unauthorized = 'unauthorized'
 }
 
-const expemtionEndpoints = [(RequestMethods.GET, Endpoints.Register), (RequestMethods.POST, Endpoints.Register)];
+const expemtionEndpoints = [[RequestMethods.GET, Endpoints.University], [RequestMethods.POST, Endpoints.Register]];
 
 /**
  * passing all requests through these three middleware
@@ -61,7 +61,7 @@ app.use(validateFirebaseAuth, validateEndpoint, proxy);
  * @return {Promise<void | Response<Error>>}  returns error response if the request headers are not authorized. Otherwise, it is passed to
  *  next middleware function by calling next()
  */
-async function validateFirebaseAuth(req: Request, res: Response, next: NextFunction) {
+export async function validateFirebaseAuth(req: Request, res: Response, next: NextFunction) {
   console.info('validating the authorization');
 
   // checking whether request endpoint is in expection list or not
@@ -124,7 +124,7 @@ async function validateFirebaseAuth(req: Request, res: Response, next: NextFunct
  * @return {Promise<void | Response<Error>>}  returns error response if no microservices has this endpoint, else passes to the next middleware
  * proxy.
  */
-async function validateEndpoint(req: Request, res: Response, next: NextFunction) {
+export async function validateEndpoint(req: Request, res: Response, next: NextFunction) {
   console.info('validating the endpoint');
 
   // removing the query params from the url
@@ -165,7 +165,7 @@ async function validateEndpoint(req: Request, res: Response, next: NextFunction)
     }
   }
 
-  console.warn(`No such endpoint ${endpoint} defined`);
+  console.log(`No such endpoint ${endpoint} defined`);
   return res.status(400).send({
     code: ErrorCodes.InvalidURL,
     message: 'Invalid URL',
@@ -180,7 +180,7 @@ async function validateEndpoint(req: Request, res: Response, next: NextFunction)
  * @return {Promise<Response<any>>}  returns response recieved from the proxied request
  * proxy.
  */
-async function proxy(req: Request, res: Response) {
+export async function proxy(req: Request, res: Response) {
   try {
     console.info('proxing the request to:', res.locals['url']);
     const receivedRes = await axios({
@@ -197,7 +197,7 @@ async function proxy(req: Request, res: Response) {
     });
     return res.status(receivedRes.status).send(receivedRes.data);
   } catch (err: any) {
-    console.error('error response recieved from the proxy request:', err.response?.data);
+    console.log('error response recieved from the proxy request:', err.response?.data);
     return res.status(err.response?.status ?? 400).send(err.response?.data ?? 'Unable to process');
   }
 }
