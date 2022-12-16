@@ -16,7 +16,8 @@ app.use((req, res, next) => {
 
 
 enum CharacterKeys {
-  ForwardSlash = '/'
+  ForwardSlash = '/',
+  QuestionMark = '?'
 }
 
 enum Endpoints {
@@ -31,7 +32,7 @@ enum RequestMethods {
    PATCH ='PATCH'
 }
 
-enum ErrorCode {
+enum ErrorCodes {
   InvalidURL = 'invalid-url',
   Unauthorized = 'unauthorized'
 }
@@ -77,7 +78,7 @@ async function validateFirebaseAuth(req: Request, res: Response, next: NextFunct
   const authorization = req.headers['authorization'];
   if (!authorization) {
     return res.status(401).send({
-      code: ErrorCode.Unauthorized,
+      code: ErrorCodes.Unauthorized,
       message: 'You are not authorized to make this request',
     });
   }
@@ -86,7 +87,7 @@ async function validateFirebaseAuth(req: Request, res: Response, next: NextFunct
 
   if (type !== 'idToken' || !idToken) { // both idToken and type should be needed
     return res.status(401).send({
-      code: ErrorCode.Unauthorized,
+      code: ErrorCodes.Unauthorized,
       message: 'You are not authorized to make this request',
     });
   }
@@ -103,7 +104,7 @@ async function validateFirebaseAuth(req: Request, res: Response, next: NextFunct
   } catch (error) {
     console.warn('error while validating the idToken', error);
     return res.status(401).send({
-      code: ErrorCode.Unauthorized,
+      code: ErrorCodes.Unauthorized,
       message: 'You are not authorized to make this request',
     });
   }
@@ -126,12 +127,15 @@ async function validateFirebaseAuth(req: Request, res: Response, next: NextFunct
 async function validateEndpoint(req: Request, res: Response, next: NextFunction) {
   console.info('validating the endpoint');
 
+  // removing the query params from the url
+  const url = req.originalUrl.split(CharacterKeys.QuestionMark)[0];
+
   // splitting url
-  const [, pathUrl]= req.originalUrl.split('/api');
-  const pathKeys = pathUrl.split('/');
+  const [, pathUrl]= url.split('/api');
+  const pathKeys = pathUrl.split(CharacterKeys.ForwardSlash);
   if (pathKeys.length == 1) {
     return res.status(400).send({
-      code: ErrorCode.InvalidURL,
+      code: ErrorCodes.InvalidURL,
       message: 'Invalid URL',
     });
   }
@@ -145,7 +149,7 @@ async function validateEndpoint(req: Request, res: Response, next: NextFunction)
   if (!servicesDoc.exists) {
     console.info('no services doc in secret collection');
     return res.status(400).send({
-      code: ErrorCode.InvalidURL,
+      code: ErrorCodes.InvalidURL,
       message: 'Invalid URL',
     });
   }
@@ -163,7 +167,7 @@ async function validateEndpoint(req: Request, res: Response, next: NextFunction)
 
   console.warn(`No such endpoint ${endpoint} defined`);
   return res.status(400).send({
-    code: ErrorCode.InvalidURL,
+    code: ErrorCodes.InvalidURL,
     message: 'Invalid URL',
   });
 }
