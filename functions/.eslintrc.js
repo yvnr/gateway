@@ -30,5 +30,6 @@ module.exports = {
     'max-len': 'off',
     'new-cap': 'off',
     'require-jsdoc': 'off',
+    'guard-for-in': 'off',
   },
 };

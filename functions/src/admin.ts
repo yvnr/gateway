@@ -5,4 +5,5 @@ export const app = fadmin.initializeApp({
   credential: fadmin.credential.applicationDefault(),
 });
 
-export {auth, database, firestore, storage, messaging} from 'firebase-admin';
+// exporting services - auth and firestore
+export {auth, firestore} from 'firebase-admin';

@@ -1,6 +1,6 @@
 /**
- * Listing down firestore documents used in this service
+ * Listing down firestore documents used by the gateService
  */
 
-// Experience document data
+// Services document data in the secrets collection
 type Services = Record<string, {domain:string, apiKey:string, apiSecret: string, endpoints: string[]}>
